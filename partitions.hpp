@@ -54,6 +54,17 @@ namespace extstd {
             }
         }
 
+        void for_each_nth(const std::size_t n, const std::function<void(const Key&, Val&)>& fun) {
+            for(const auto& pair : m_map) {
+                auto size = pair.second->size();
+                if(size <= n) {
+                    throw std::out_of_range(std::string("Could not find value for index n = ") + std::to_string(n));
+                }
+                auto it = std::next(pair.second->begin(), n);
+                fun(pair.first, *it);
+            }
+        }
+
         void print() const {
             std::cout << "-- Partitions --" << std::endl;
             for(const auto& m : m_map) {

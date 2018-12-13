@@ -73,5 +73,16 @@ int main(int /*argc*/, char** /*argv*/)
     });
 
     partitions.print();
+
+    try {
+        partitions.for_each_nth(0, [](const char& /* key */, std::string& val) {
+            val = "!!!";
+        });
+    } catch(const std::out_of_range& e) {
+        std::cout << e.what() << std::endl;
+    }
+
+    partitions.print();
+
     return 0;
 }
