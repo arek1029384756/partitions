@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iterator>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <list>
@@ -67,5 +68,10 @@ int main(int /*argc*/, char** /*argv*/)
 
     partitions.print();
 
+    partitions.for_each([](const char& /* key */, std::string& val) {
+        std::transform(val.begin(), val.end(), val.begin(), ::toupper);
+    });
+
+    partitions.print();
     return 0;
 }

@@ -46,6 +46,14 @@ namespace extstd {
             }
         }
 
+        void for_each(const std::function<void(const Key&, Val&)>& fun) {
+            for(const auto& pair : m_map) {
+                for(auto& v : *pair.second) {
+                    fun(pair.first, v);
+                }
+            }
+        }
+
         void print() const {
             std::cout << "-- Partitions --" << std::endl;
             for(const auto& m : m_map) {
