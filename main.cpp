@@ -13,9 +13,9 @@ namespace {
         auto tp = std::chrono::system_clock::now();
         std::srand(tp.time_since_epoch().count());
         for(std::size_t i = 0; i < size; ++i) {
-            std::size_t num = std::rand() % 100;
+            std::size_t len = std::size_t(1) + std::rand() % 100;
             T t;
-            for(std::size_t i = 0; i < num; ++i) {
+            for(std::size_t i = 0; i < len; ++i) {
                 char c = 'a' + std::rand() % 26;
                 t += c;
             }
@@ -68,19 +68,28 @@ int main(int /*argc*/, char** /*argv*/)
 
     partitions.print();
 
+
     partitions.for_each([](const char& /* key */, std::string& val) {
         std::transform(val.begin(), val.end(), val.begin(), ::toupper);
     });
 
     partitions.print();
 
+
     try {
-        partitions.for_each_nth(0, [](const char& /* key */, std::string& val) {
+        partitions.for_each_nth(2, [](const char& /* key */, std::string& val) {
             val = "!!!";
         });
     } catch(const std::out_of_range& e) {
         std::cout << e.what() << std::endl;
     }
+
+    partitions.print();
+
+
+    partitions.for_each_nth_nonthrow(2, [](const char& /* key */, std::string& val) {
+        val = "???";
+    });
 
     partitions.print();
 

@@ -54,15 +54,25 @@ namespace extstd {
             }
         }
 
-        void for_each_nth(const std::size_t n, const std::function<void(const Key&, Val&)>& fun) {
+        void for_each_nth_nonthrow(const std::size_t n,
+                          const std::function<void(const Key&, Val&)>& existFun,
+                          const std::function<void(const Key&)>& emptyFun = [](const Key&){}) {
             for(const auto& pair : m_map) {
                 auto size = pair.second->size();
-                if(size <= n) {
-                    throw std::out_of_range(std::string("Could not find value for index n = ") + std::to_string(n));
+                if(size > n) {
+                    auto it = std::next(pair.second->begin(), n);
+                    existFun(pair.first, *it);
+                } else {
+                    emptyFun(pair.first);
                 }
-                auto it = std::next(pair.second->begin(), n);
-                fun(pair.first, *it);
             }
+        }
+
+        void for_each_nth(const std::size_t n,
+                          const std::function<void(const Key&, Val&)>& existFun) {
+            for_each_nth_nonthrow(n, existFun, [&n](const Key&) {
+                throw std::out_of_range(std::string("Could not find value for index n = ") + std::to_string(n));
+            });
         }
 
         void print() const {
