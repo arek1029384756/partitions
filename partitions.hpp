@@ -14,6 +14,9 @@ namespace extstd {
         std::function<Key(Val)> m_condition;
 
         public:
+        partition(const std::function<Key(Val)>& condition)
+            : m_condition(condition) {}
+
         template<typename Input>
         partition(const Input& data, const std::function<Key(Val)>& condition)
             : m_condition(condition) {
