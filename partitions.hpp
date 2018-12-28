@@ -2,6 +2,7 @@
 #include <string>
 #include <iterator>
 #include <functional>
+#include <numeric>
 #include <vector>
 #include <memory>
 #include <map>
@@ -49,6 +50,12 @@ namespace extstd {
             }
         }
 
+        std::size_t size() const {
+            return std::accumulate(m_map.begin(), m_map.end(), std::size_t(0), [](const auto& sum, const auto& pair) {
+                return sum + pair.second->size();
+            });
+        }
+
         void for_each(const std::function<void(const Key&, Val&)>& fun) {
             for(const auto& pair : m_map) {
                 for(auto& v : *pair.second) {
@@ -85,7 +92,7 @@ namespace extstd {
                 std::copy(m.second->begin(), m.second->end(), std::ostream_iterator<Val>(std::cout, " "));
                 std::cout << std::endl << std::endl;
             }
-            std::cout << std::endl;
+            std::cout << "Total size: " << size() << std::endl;
         }
     };
 
