@@ -11,15 +11,17 @@ namespace extstd {
 
     template<typename Val, typename Key = int, typename Container = std::vector<Val>>
     class partition {
+        using Condition = std::function<Key(const Val&)>;
+
         std::map<Key, std::unique_ptr<Container>> m_map;
-        std::function<Key(Val)> m_condition;
+        Condition m_condition;
 
         public:
-        partition(const std::function<Key(Val)>& condition)
+        partition(const Condition& condition)
             : m_condition(condition) {}
 
         template<typename Input>
-        partition(const Input& data, const std::function<Key(Val)>& condition)
+        partition(const Input& data, const Condition& condition)
             : m_condition(condition) {
             for(const auto& v : data) {
                 insert(v);
@@ -33,7 +35,7 @@ namespace extstd {
                 it->second->emplace_back(v);
             } else {
                 m_map.emplace_hint(it,
-                                    std::make_pair(key, std::unique_ptr<Container>(new Container({v})))
+                                    std::make_pair(key, std::unique_ptr<Container>(new Container(1, v)))
                                 );
             }
         }
