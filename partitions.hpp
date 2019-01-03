@@ -21,21 +21,32 @@ namespace extstd {
             : m_condition(condition) {}
 
         template<typename Input>
-        partition(const Input& data, const Condition& condition)
+        partition(Input&& data, const Condition& condition)
+            : m_condition(condition) {
+            for(auto&& v : data) {
+                insert(std::move(v));
+            }
+        }
+
+        template<typename Input>
+        partition(Input& data, const Condition& condition)
             : m_condition(condition) {
             for(const auto& v : data) {
                 insert(v);
             }
         }
 
-        void insert(const Val& v) {
+        template<typename Value>
+        void insert(Value&& v) {
             auto key = m_condition(v);
             auto it = m_map.lower_bound(key);
             if(it != m_map.end() && it->first == key) {
-                it->second->emplace_back(v);
+                it->second->emplace_back(std::forward<Value>(v));
             } else {
+                auto* c = new Container();
+                c->emplace_back(std::forward<Value>(v));
                 m_map.emplace_hint(it,
-                                    std::make_pair(key, std::unique_ptr<Container>(new Container(1, v)))
+                                    std::make_pair(key, std::unique_ptr<Container>(c))
                                 );
             }
         }

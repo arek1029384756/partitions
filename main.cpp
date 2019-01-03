@@ -34,7 +34,7 @@ namespace {
 
     template<typename T>
     void printInput(const std::vector<T>& data) {
-        std::cout << "Input:" << std::endl;
+        std::cout << "Input (size = " << data.size() << "):" << std::endl;
         std::copy(data.begin(), data.end(), std::ostream_iterator<T>(std::cout, " "));
         std::cout << std::endl << std::endl;
     }
@@ -58,6 +58,7 @@ int main(int /*argc*/, char** /*argv*/)
     //extstd::partition<std::string> partitions(input, [](const std::string& x) { return std::string::npos != x.find("foo"); });
 
     //Divide strings with respect to first character
+    //extstd::partition<std::string, char> partitions(std::move(input), [](const std::string& x) {
     extstd::partition<std::string, char> partitions(input, [](const std::string& x) {
                                                                 try {
                                                                     return x.at(0);
@@ -66,6 +67,7 @@ int main(int /*argc*/, char** /*argv*/)
                                                                 }
                                                             });
 
+    printInput(input);
     partitions.print();
 
 
